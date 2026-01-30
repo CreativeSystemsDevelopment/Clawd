@@ -1,0 +1,27 @@
+[Unit]
+Description=ClawdBot AI Assistant
+After=network.target
+
+[Service]
+Type=simple
+User=clawdbot
+WorkingDirectory=/home/clawdbot
+ExecStart=/usr/bin/clawdbot gateway --port 18789
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=clawdbot
+
+# Security settings
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/clawdbot/.clawdbot
+
+# Environment
+Environment="NODE_ENV=production"
+
+[Install]
+WantedBy=multi-user.target

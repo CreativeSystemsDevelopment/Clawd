@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  clawdbot:
+    image: node:22-alpine
+    container_name: clawdbot
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "18789:18789"
+    volumes:
+      - clawdbot-data:/root/.clawdbot
+      - ./config:/app/config:ro
+    environment:
+      - NODE_ENV=production
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - CLAWDBOT_PORT=18789
+    command: >
+      sh -c "npm install -g clawdbot@latest &&
+             clawdbot gateway --port 18789"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:18789"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  clawdbot-data:
+    driver: local
